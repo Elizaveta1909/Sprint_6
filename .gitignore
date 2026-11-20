@@ -1,0 +1,7 @@
+.pytest_cache
+__pycache__
+tests/__pycache__
+pages/__pycache__
+.DS_Store
+pages/.DS_Store
+tests/.DS_Store
