@@ -1,22 +1,32 @@
 import pytest
 from selenium import webdriver
+from data import BASE_URL
+from pages.login_page import LoginPage
+from pages.questions_page import MainQuestionsPage
+from locators.questions_locators import FAQ_SUBHEADER
+from locators.login_locators import ORDER_BUTTON_HEADER, ORDER_BUTTON_HOME
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from locators import FAQ_SUBHEADER, ORDER_BUTTON_HEADER, ORDER_BUTTON_HOME
-from pages.login_page import LoginPage
 from pages.scooter_rent_page import RentScooterPage
 
-url = "https://qa-scooter.education-services.ru"
+base_url = BASE_URL
 
 
 @pytest.fixture(scope='function')
 def driver():
 
     browser = webdriver.Firefox()
-    browser.get(url)
+    browser.get(base_url)
     
     yield browser
     browser.quit()
+    
+@pytest.fixture
+def questions_page(driver):
+    page = MainQuestionsPage(driver)
+    page.accept_cookies()
+    page.scroll_to_faq()
+    return page
  
 @pytest.fixture(scope= 'function') 
 def page_is_visible(driver):

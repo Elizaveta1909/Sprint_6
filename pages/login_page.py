@@ -1,32 +1,28 @@
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from locators import SCOOTER_LOGO, COOKIE_ACCEPT_BUTTON, ORDER_BUTTON_HEADER, FILL_NAME, FILL_SURNAME, FILL_ADRESS, FILL_METRO, FILL_PHONE, MOVE_ON_BUTTON, ABOUT_RENT_TITLE, METRO_STATION_SOKOLNIKI
+import allure
+from pages.base_page import BasePage
+from locators.login_locators import SCOOTER_LOGO, ORDER_BUTTON_HEADER, FILL_NAME, FILL_SURNAME, FILL_ADRESS, FILL_METRO, FILL_PHONE, MOVE_ON_BUTTON, ABOUT_RENT_TITLE, METRO_STATION_SOKOLNIKI
 
-class LoginPage:
+class LoginPage(BasePage):
     
-    def __init__(self, driver):
-        self.driver = driver
-        self.wait = WebDriverWait(driver, 7)
-        
+    @allure.step('Нажать на кнопку "Заказать"')
     def click_order_button(self, locator=ORDER_BUTTON_HEADER):
-        self.wait.until(EC.visibility_of_element_located(SCOOTER_LOGO))
-        button = self.wait.until(EC.presence_of_element_located(locator))
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", button)
-        self.wait.until(EC.element_to_be_clickable(locator)).click()
+        self.find_visible(SCOOTER_LOGO)
+        self.scroll_and_click(locator)
                
-        #self.wait.until(EC.element_to_be_clickable(ORDER_BUTTON_HEADER)).click()
-        
+    @allure.step('Заполнить форму "Для кого самокат"')    
     def login(self):
-        self.wait.until(EC.element_to_be_clickable(COOKIE_ACCEPT_BUTTON)).click()
-        self.wait.until(EC.visibility_of_element_located(FILL_NAME)).send_keys('Алиса')
-        self.wait.until(EC.visibility_of_element_located(FILL_SURNAME)).send_keys('Практиковна')
-        self.wait.until(EC.visibility_of_element_located(FILL_ADRESS)).send_keys('Москва')
-        self.wait.until(EC.visibility_of_element_located(FILL_METRO)).click()
-        self.wait.until(EC.visibility_of_element_located(METRO_STATION_SOKOLNIKI)).click()
-        self.wait.until(EC.visibility_of_element_located(FILL_PHONE)).send_keys('+79999991122')
+        self.accept_cookies()
+        self.type_text(FILL_NAME, 'Алиса')
+        self.type_text(FILL_SURNAME, 'Практиковна')
+        self.type_text(FILL_ADRESS, 'Москва')
+        self.click(FILL_METRO)
+        self.click(METRO_STATION_SOKOLNIKI)
+        self.type_text(FILL_PHONE, '+79999991122')
+        self.click(MOVE_ON_BUTTON)
         
-        self.wait.until(EC.element_to_be_clickable(MOVE_ON_BUTTON)).click()
-        return self.wait.until(EC.visibility_of_element_located(ABOUT_RENT_TITLE)).text
+    @allure.step('Убедиться, что отображается заголовок следующей формы')   
+    def is_about_rent_title_visible(self):    
+        return self.find_visible(ABOUT_RENT_TITLE)
         
         
         
